@@ -1,0 +1,144 @@
+@startuml
+skin rose
+left to right direction
+interface Elemento{
+    + esIgual(elemento: Elemento): boolean
+    + getId(): int
+    + getNombre(): string
+    + getEtapa(): string
+    + getTipo1(): string
+    + getTipo2(): string
+}
+
+interface Coleccion{
+    + agregarAlFinal(elemento: Elemento): boolean
+    + agregarAlInicio(elemento: Elemento): boolean
+    + getCabeza(): NodoDoble
+    + isVacia(): boolean
+    + tamanio(): int
+    + desplegarIdRangos(): void
+    + desplegarAlf(): void
+    + desplegarTipo(): void
+    + desplegarPrimeraEvo(): void
+    + busquedaPersonalizada(ListaNexoDoble listaPokemones): void
+}
+Coleccion ..> Elemento: uses
+
+interface Lista{
+    + agregarAlFinal(elemento: Elemento): boolean
+    + agregarAlInicio(elemento: Elemento): boolean
+    + getCabeza(): NodoDoble
+    + isVacia(): boolean
+    + tamanio(): int
+    + desplegarIdRangos(): void
+    + desplegarAlf(): void
+    + desplegarTipo(): void
+    + desplegarPrimeraEvo(): void
+    + busquedaPersonalizada(ListaNexoDoble listaPokemones): void
+
+}
+Lista ---|> Coleccion: extends
+
+class NodoDoble {
+    - elemento: Elemento
+    - anterior: NodoDoble
+    - siguiente: NodoDoble
+    + NodoDoble()
+    + getElemento(): Elemento
+    + getSiguiente(): NodoDoble
+    + setSiguiente(siguiente: NodoDoble): void
+    + getAnterior(): NodoDoble
+    + setAnterior(anterior: NodoDoble): void
+}
+NodoDoble *--> "1" Elemento: - elemento: Elemento
+NodoDoble o--> "0..1" NodoDoble: - siguiente: Nodo
+NodoDoble o--> "0..1" NodoDoble: - anterior: Nodo
+
+class ListaNexoDoble {
+    - cabeza: NodoDoble
+    - cola: NodoDoble
+    + ListaNexoDoble()
+
+}
+ListaNexoDoble *--> "0..1" NodoDoble: - cabeza: Nodo
+ListaNexoDoble *--> "0..1" NodoDoble: - cola: Nodo
+ListaNexoDoble ..|> Lista: implements
+
+class Pokemon {
+    - id: int
+    - nombre: string
+    - etapa: string
+    - tipo1: string
+    - tipo2: string
+    + Pokemon(id:int, nombre: string, etapa:string, tipo1:string, tipo2:string)
+    + getId(): int
+    + getNombre(): string
+    + getEtapa(): string
+    + getTipo1(): string
+    + getTipo2(): string
+}
+
+class Eevee{
+    - varianteUno: string
+    - varianteDos: string
+    - varianteTres: string
+    + Eevee(id: int, nombre: string, etapa: string, tipo1: string, tipo2: string, varianteUno: string, varianteDos: string, varianteTres: string)
+    + getVarianteUno(): string
+    + getVarianteDos(): string
+    + getVarianteTres(): string
+}
+
+class Basico{
+    - evoPrimera: string
+    - evoSegunda: string
+    + Basico(id: int, nombre: string, etapa:string, tipo1:string, tipo2:string, evoPrimera:string, evoSegunda: string)
+    + getEvoPrimera(): string
+    + getEvoSegunda(): string
+}
+
+class PrimeraEvo{
+    - evoSiguiente: string
+    - evoPrevia: string
+    + PrimeraEvo(id:int, nombre: string, etapa:string, tipo1:string, tipo2:string, evoSiguiente:string, evoPrevia: string)
+    + getEvoSiguiente(): string
+    + getEvoPrevia(): string
+}
+
+class SegundaEvo{
+    - evoPrimera: string
+    - evoSegunda: string
+    + SegundaEvo(id:int, nombre: string, etapa:string, tipo1:string, tipo2:string, evoPrimera: string, evoSegunda: string)
+    + getEvoPrimera(): string
+    + getEvoSegunda(): string
+}
+Pokemon"1" ..|> "1"Elemento: implements
+Pokemon"1"<|--"1..*"Eevee
+Pokemon"1"<|--"1..*"Basico
+Pokemon"1"<|--"*"PrimeraEvo
+Pokemon"1"<|--"*"SegundaEvo
+
+interface Sistema{
+    + desplegarId(id: int): string
+    + desplegarAlf(): string
+    + desplegarTipo(tipo: string): string
+    + desplegarPrimeraEvo(id: int): string
+    + buscarPokemon(nombre:string, id: int): string
+}
+
+class SistemaImpl{
+    - pokemons: ListaNexoDoble
+    + SistemaImpl()
+    + menu(): void
+}
+
+class LectorCSV{
+    - archivo: string
+    - lector: BufferedReader
+    - linea: string
+    + LectorCSV()
+    + Lectura(ListaNexoDoble): ListaNexoDoble
+}
+LectorCSV "1" --> "1" SistemaImpl: Guarda datos
+Sistema"1"<|.."1"SistemaImpl: implements
+ListaNexoDoble"1"<--"1"Sistema
+@enduml
